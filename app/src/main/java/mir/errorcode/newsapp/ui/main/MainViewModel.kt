@@ -7,35 +7,38 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import mir.errorcode.newsapp.data.api.TestRepo
+import mir.errorcode.newsapp.data.api.NewsRepository
 import mir.errorcode.newsapp.models.NewsResponse
+import mir.errorcode.newsapp.utils.Resource
 import javax.inject.Inject
 
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: TestRepo ): ViewModel() {
+class MainViewModel @Inject constructor(private val repository: NewsRepository): ViewModel() {
 
-    private val _all = MutableLiveData<NewsResponse>()
-    val all : LiveData<NewsResponse>
-        get() = _all
+
+    val newsLiveData: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    val newsPage = 1
 
     init {
-        getAll()
+        getNews("us")
     }
 
 
+    private fun getNews(countryCode: String) {
+        viewModelScope.launch {
+            newsLiveData.postValue(Resource.Loading())
+            val response = repository.getNews(countryCode = countryCode, pageNumber = newsPage)
+            if(response.isSuccessful){
+                response.body().let { res ->
+                    newsLiveData.postValue(Resource.Success(res))
 
-
-    fun getAll() = viewModelScope.launch {
-        repository.getAll().let {
-            if(it.isSuccessful ) {
-                Log.d("checkData", "Response: ${it.body()}")
-                _all.postValue(it.body())
-            } else {
-                Log.e("checkData", "Failed: ${it.errorBody()?.string()}")
-                Log.d("checkData", " Failed to load articles : ${it.errorBody()}")
+                }
+            }else {
+                newsLiveData.postValue(Resource.Error(message = response.message()))
             }
         }
     }
+
 
 }
