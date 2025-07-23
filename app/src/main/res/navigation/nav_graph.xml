@@ -22,7 +22,11 @@
         android:id="@+id/detailsFragment"
         android:name="mir.errorcode.newsapp.ui.details.DetailsFragment"
         android:label="fragment_details"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="article"
+            app:argType="mir.errorcode.newsapp.models.Article" />
+    </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="mir.errorcode.newsapp.ui.favorite.FavoriteFragment"
