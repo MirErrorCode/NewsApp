@@ -56,6 +56,7 @@ class FavoriteFragment : Fragment() {
         mBinding.recyclerViewFavorites.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.favoriteArticles.observe(viewLifecycleOwner) { articles ->
+            articles.forEach { it.isFavorite = true }
             adapter.differ.submitList(articles)
         }
     }

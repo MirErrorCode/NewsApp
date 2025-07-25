@@ -39,6 +39,10 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        parentFragmentManager.setFragmentResultListener("favorite_changed", viewLifecycleOwner) { _, _ ->
+            viewModel.getNews("us")
+        }
+
         initAdapter()
 
         newsAdapter.setOnItemClickListener {
@@ -70,9 +74,14 @@ class MainFragment : Fragment() {
             }
         }
 
+
+
+
         newsAdapter.setOnFavoriteClickListener { article ->
             viewModel.toggleFavorite(article)
         }
+
+
     }
 
     private fun initAdapter() {

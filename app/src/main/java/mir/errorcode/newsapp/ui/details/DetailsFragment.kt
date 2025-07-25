@@ -85,9 +85,13 @@ class DetailsFragment : Fragment() {
                 viewModel.viewModelScope.launch(Dispatchers.IO) {
                     viewModel.toggleFavorite(article)
                     val isNowFavorite = viewModel.isFavorite(article)
-                    val iconRes = if (isNowFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
                     requireActivity().runOnUiThread {
-                        mBinding.iconFavorite.setImageResource(iconRes)
+                        mBinding.iconFavorite.setImageResource(
+                            if (isNowFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
+                        )
+                        parentFragmentManager.setFragmentResult(
+                            "favorite_changed", Bundle().apply { putBoolean("changed", true) }
+                        )
                     }
                 }
             }
