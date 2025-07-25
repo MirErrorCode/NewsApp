@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import mir.errorcode.newsapp.models.Article
 
 
-@Database(entities = [Article::class], version = 1, exportSchema = true)
+@Database(entities = [Article::class], version = 3, exportSchema = true)
 abstract class ArticleDatabase: RoomDatabase() {
 
     abstract fun getArticleDao(): ArticleDao

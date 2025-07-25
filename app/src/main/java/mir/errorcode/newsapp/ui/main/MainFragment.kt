@@ -11,8 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import mir.errorcode.newsapp.R
 import mir.errorcode.newsapp.databinding.FragmentMainBinding
+import mir.errorcode.newsapp.models.Article
 import mir.errorcode.newsapp.ui.adapters.NewsAdapter
 import mir.errorcode.newsapp.utils.Resource
 
@@ -66,6 +68,10 @@ class MainFragment : Fragment() {
                     mBinding.pagProgressBar.visibility = View.VISIBLE
                 }
             }
+        }
+
+        newsAdapter.setOnFavoriteClickListener { article ->
+            viewModel.toggleFavorite(article)
         }
     }
 

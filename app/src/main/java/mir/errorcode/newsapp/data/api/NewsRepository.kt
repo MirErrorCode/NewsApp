@@ -19,6 +19,25 @@ class NewsRepository @Inject constructor(private val newsService: NewsService, p
 
     suspend fun addToFavorite(article: Article) = articleDao.insert(article = article)
 
-    suspend fun deleteFromFavorite(article: Article) = articleDao.delete(article = article)
+    suspend fun removeFromFavorite(article: Article) {
+        articleDao.deleteByUrl(article.url)
+    }
+
+    suspend fun isArticleFavorite(url: String): Boolean {
+        return articleDao.isArticleFavorite(url)
+    }
+
+    suspend fun getFavoriteUrls(): List<String> {
+        return articleDao.getAllArticlesList().map { it.url }
+    }
+
+    suspend fun deleteArticle(article: Article) {
+        articleDao.delete(article)
+    }
+
+
+
+
+
 
 }

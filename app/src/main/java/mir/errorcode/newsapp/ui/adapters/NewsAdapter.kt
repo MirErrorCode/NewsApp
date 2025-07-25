@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide
 import mir.errorcode.newsapp.R
 import mir.errorcode.newsapp.databinding.ItemArticleBinding
 import mir.errorcode.newsapp.models.Article
+import mir.errorcode.newsapp.utils.Utils
+
 
 class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
@@ -53,11 +55,26 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
             Glide.with(root).load(article.urlToImage).into(articleImage)
             articleImage.clipToOutline = true
             articleTitle.text = article.title
-            articleDate.text = article.publishedAt
+            articleDate.text = Utils.formatDate(article.publishedAt)
 
             root.setOnClickListener {
                 onItemClickListener?.invoke(article)
             }
+
+            iconFavorite.setOnClickListener {
+                onFavoriteClickListener?.invoke(article)
+            }
+        }
+
+        holder.binding.iconFavorite.setImageResource(
+            if (article.isFavorite) R.drawable.ic_favorite_filled
+            else R.drawable.ic_favorite
+        )
+
+        holder.binding.iconFavorite.setOnClickListener {
+            article.isFavorite = !article.isFavorite
+            notifyItemChanged(holder.adapterPosition)
+            onFavoriteClickListener?.invoke(article)
         }
     }
 
@@ -69,6 +86,13 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
     fun setOnItemClickListener(listener: (Article) -> Unit){
         onItemClickListener = listener
+    }
+
+
+    private var onFavoriteClickListener: ((Article) -> Unit)? = null
+
+    fun setOnFavoriteClickListener(listener: (Article) -> Unit) {
+        onFavoriteClickListener = listener
     }
 
 }

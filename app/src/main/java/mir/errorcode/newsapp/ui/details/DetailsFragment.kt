@@ -17,7 +17,11 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 
 ;
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import mir.errorcode.newsapp.R
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -48,6 +52,17 @@ class DetailsFragment : Fragment() {
             mBinding.articleDetailsTitle.text = article.title
             mBinding.articleDetailsDescriptionText.text = article.description
 
+
+            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                val isFavorite = viewModel.isFavorite(article)
+                val iconRes = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
+                requireActivity().runOnUiThread {
+                    mBinding.iconFavorite.setImageResource(iconRes)
+                }
+            }
+
+
+
             mBinding.articleDetailsButton.setOnClickListener {
                 try {
                     Intent()
@@ -67,8 +82,18 @@ class DetailsFragment : Fragment() {
         }
         }
             mBinding.iconFavorite.setOnClickListener {
-                viewModel.saveFavoriteArticle(article)
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    viewModel.toggleFavorite(article)
+                    val isNowFavorite = viewModel.isFavorite(article)
+                    val iconRes = if (isNowFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
+                    requireActivity().runOnUiThread {
+                        mBinding.iconFavorite.setImageResource(iconRes)
+                    }
+                }
+            }
 
+            mBinding.iconBack.setOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
     }

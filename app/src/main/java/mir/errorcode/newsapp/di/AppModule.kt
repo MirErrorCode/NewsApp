@@ -55,7 +55,8 @@ object AppModule {
             context,
             ArticleDatabase::class.java,
             "article_database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     fun provideArticleDao(appDatabase: ArticleDatabase): ArticleDao {
